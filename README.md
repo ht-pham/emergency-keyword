@@ -10,7 +10,7 @@ The growing shortage of nursing staff in healthcare facilities has increased the
 Arduino Nano 33 BLE Sense Rev2
 
 #### Software Pipeline
-1. Audio data collection: upload arduino/record_voices/record_voices.ino to the board and run the sketch to record voices.
+1. Audio data collection: run recording scripts to record raw voice memos from Arduino device.
 
 2. Feature extraction: run src/mfcc.py for feature extraction
 
@@ -23,8 +23,9 @@ Arduino Nano 33 BLE Sense Rev2
 ### How to run
 
 1. Audio data collection:
+From Arduino IDE, verify and upload arduino/record_voices/record_voices.ino to the board and keep IDE open for serial connection.
 
-From the root of proect directory, for each label, run multiple times:
+From your local IDE or your terminal at the root of project directory, for each label, run multiple times:
 
 On MacOS run: 
 ```
@@ -38,3 +39,5 @@ python3 src/data/txt_to_wav.py
 
 <!--python3 src/data/collect_audio.py --port /dev/cu.usbmodem11401 --label emergency --samples 10 --duration 3
 python3 src/data/txt_to_wav.py-->
+
+2. Feature Extraction:
