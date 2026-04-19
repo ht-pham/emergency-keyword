@@ -36,5 +36,5 @@ Once you complete your recordings, you run this command line to convert *.txt to
 python3 src/data/txt_to_wav.py 
 ```                                                                         
 
-python3 src/data/collect_audio.py --port /dev/cu.usbmodem11401 --label emergency --samples 10 --duration 3
-python3 src/data/txt_to_wav.py
+<!--python3 src/data/collect_audio.py --port /dev/cu.usbmodem11401 --label emergency --samples 10 --duration 3
+python3 src/data/txt_to_wav.py-->
