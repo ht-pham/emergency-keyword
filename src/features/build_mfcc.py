@@ -20,6 +20,11 @@ def extract_mfcc_from_directory(directory):
             mfcc_features[file_name] = extract_mfcc_from_file(full_path)
     return mfcc_features
 
+def export_mfcc_features(mfcc_features, output_file="./../../data/processed/features/mfcc_features.pkl"):
+    import pickle
+    with open(output_file, 'wb') as f:
+        pickle.dump(mfcc_features, f)
+
 if __name__ == "__main__":
     categories = ["nourishment", "assistance", "emergency"]
     binary_categories = [0,1,2]
@@ -27,3 +32,5 @@ if __name__ == "__main__":
     for category in categories:
         all_mfcc_features[category] = extract_mfcc_from_directory(category)
         print(f"# MFCC features for {category}: {all_mfcc_features[category].keys()}")
+
+    export_mfcc_features(all_mfcc_features)
