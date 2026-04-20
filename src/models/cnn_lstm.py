@@ -8,12 +8,12 @@ class CNN_LSTM(nn.Module):
         # CNN layers for feature extraction
         self.conv1 = nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1)
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.conv1 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.fc1 = nn.Linear(32 * 4 * 4, 128) 
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.fc1 = nn.Linear(32 * 4 * 4, 128)
         # LSTM layers for sequence modeling
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, num_classes)
+        self.fc2 = nn.Linear(hidden_size, num_classes)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))

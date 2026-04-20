@@ -34,5 +34,4 @@ if __name__ == "__main__":
         all_mfcc_features[category] = extract_mfcc_from_directory(category)
         print(f"# MFCC features for {category}: {all_mfcc_features[category].keys()}")
     
-
     export_mfcc_features(all_mfcc_features)

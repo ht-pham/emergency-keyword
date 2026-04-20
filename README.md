@@ -41,3 +41,19 @@ python3 src/data/txt_to_wav.py
 python3 src/data/txt_to_wav.py-->
 
 2. Feature Extraction:
+For data analysis purpose, review mfcc.ipynb notebook for audio waveform, MFCCs, etc. 
+
+The mfcc.py is the MFFC class for extracting MFCC features from .wav files.
+
+The build_mfcc.py is the file to build and export MFCC features as Python dictionary object to Pickle object
+
+3. Build Neural Networks with Torch.nn Module:
+
+### Baseline Model - CNN
+
+This model has 3 Convolution 2D layers, each followed by a Max Pooling layer, and two Fully Connected layers with Dropout rate of 0.25 in between two Linear layers.
+
+
+### Upgraded Model - CNN-LSTM
+
+This model has a preceded simple 2-layer CNN model followed by a single-layer LSTM neural network.
