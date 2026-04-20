@@ -1,6 +1,7 @@
 from mfcc import MFCCExtractor
 from mfcc import wav_data_dir
 import os
+import pandas as pd
 
 def extract_mfcc_from_file(file_path):
     mfcc_extractor = MFCCExtractor()
@@ -32,5 +33,6 @@ if __name__ == "__main__":
     for category in categories:
         all_mfcc_features[category] = extract_mfcc_from_directory(category)
         print(f"# MFCC features for {category}: {all_mfcc_features[category].keys()}")
+    
 
     export_mfcc_features(all_mfcc_features)

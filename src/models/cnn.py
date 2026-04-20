@@ -28,6 +28,10 @@ class CNN(nn.Module):
         x = self.fc3(x)
         return x
     
+    
+    def loss(self, outputs, labels):
+        return F.cross_entropy(outputs, labels)
+    
     def predict(self, x):
         self.eval()
         with torch.no_grad():
