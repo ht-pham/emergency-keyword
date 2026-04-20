@@ -21,9 +21,9 @@ def extract_mfcc_from_directory(directory):
     return mfcc_features
 
 if __name__ == "__main__":
-    categories = ["nourishment", "assistance/", "emergency/"]
+    categories = ["nourishment", "assistance", "emergency"]
     binary_categories = [0,1,2]
     all_mfcc_features = {}
     for category in categories:
         all_mfcc_features[category] = extract_mfcc_from_directory(category)
-    print(all_mfcc_features)
+        print(f"# MFCC features for {category}: {all_mfcc_features[category].keys()}")
