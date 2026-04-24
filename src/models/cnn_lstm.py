@@ -15,6 +15,15 @@ class CNN_LSTM(nn.Module):
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.fc2 = nn.Linear(hidden_size, num_classes)
 
+        # First convolutional layer: input channels = 12 (for MFCC), output channels = 16, kernel size = 3
+        self.conv1 = nn.Conv1d(12, 16, kernel_size=3, stride=2, padding=1)
+        # Second convolutional layer: input channels = 16, output channels = 32, kernel size = 3
+        self.conv2 = nn.Conv1d(16, 32, kernel_size=3, stride=2, padding=1)
+        
+        self.pool1 = nn.AdaptiveAvgPool1d(1)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc1 = nn.Linear(32, num_classes)  
+
     def forward(self, x):
         x = F.relu(self.conv1(x))
         x = self.pool1(x)
