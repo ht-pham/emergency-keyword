@@ -45,7 +45,7 @@ def load_optimizers(model):
 def build(model,dataloader):
     opt, criterion = load_optimizers(model)
     model.train()
-    for epoch in range(100):
+    for epoch in range(101):
         for X_batch,y_batch in dataloader:
             predictions = model(X_batch)
             loss = criterion(predictions,y_batch)
