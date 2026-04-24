@@ -1,7 +1,7 @@
 from mfcc_extractor import MFCCExtractor
 from mfcc_extractor import wav_data_dir
 import os
-import pandas as pd
+
 import numpy as np
 
 def extract_mfcc_from_file(file_path):
