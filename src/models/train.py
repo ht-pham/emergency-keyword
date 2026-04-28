@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from cnn import CNN
 from cnn_lstm import CNN_LSTM
 from dataset import MFCCDataset
+from tflite_conversion import convert_pytorch_to_tflite
 
 def load_data():
     X = np.load('./../../data/processed/labels/X.npy')
@@ -87,31 +88,34 @@ def evaluate(model,testloader):
 
                
 if __name__ == "__main__":
-    # Step 1 - load data
+    #======== STEP 1 - LOAD & PROCESS DATASET ========
+    #-----------  (1) load data   --------------------
     X,y = load_data()
     X_train, X_test, y_train, y_test = split_data(X, y)
 
-    # Normalize before converting to tensor
+    #-----------  (2) normalize data   ---------------
     X_train = normalize(X=X_train)
     X_test = normalize(X=X_test)
-    # Convert to tensor
+    #-----------  (3) convert to Tensor   ------------
     dataloader = toTensor(X=X_train,y=y_train)
     testloader = toTensor(X=X_test,y=y_test)
 
-    # Step 2 - load model
+    #======== STEP 2 - LOAD MODELS ===================
+    #-----------  (1) load models   ------------------
     base_model = CNN()
     lstm_model = CNN_LSTM()
-
-    ## load optimizer and criterion for model training
+    #-----------  (2) load parameters   --------------
     cnn_opt, cnn_criterion = load_optimizers(base_model)
     lstm_opt, lstm_criterion = load_optimizers(lstm_model)
     
-
-    ## train the model
+    #======== STEP 3 - TRAIN & EVALUATE MODELS =======
+    #----------- (1) Train models --------------------
+    ## train the models
     build(base_model,dataloader,80)
     build(lstm_model,dataloader,150)
 
-    ## validate the model
+    #----------- (2) Evaluate models -----------------
+    #----------- Baseline Model: CNN -----------------
     print("\n\t\tMODEL EVALUATION\n\n")
     print("=====Training set=======")
     evaluate(base_model,dataloader)
@@ -119,13 +123,19 @@ if __name__ == "__main__":
     print("======Testing set=======")
     evaluate(base_model,testloader)
 
-    ## validate the model
+    #----------- Model: CNN + LSTM  ------------------
     print("\n\t\tMODEL EVALUATION\n\n")
     print("=====Training set=======")
     evaluate(lstm_model,dataloader)
     print("\n\t\tMODEL EVALUATION\n\n")
     print("======Testing set=======")
     evaluate(lstm_model,testloader)
+
+    #======== STEP 4 - CONVERT MODELS TO TFLITE =====
+    convert_pytorch_to_tflite(base_model,"cnn",(1,12,298))
+    convert_pytorch_to_tflite(lstm_model,"cnn_lstm",(1,12,298))
+    
+
     
 
 
