@@ -3,38 +3,37 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class CNN_LSTM(nn.Module):
-    def __init__(self, input_size=13, hidden_size=128, num_layers=2, num_classes=3):
+    def __init__(self, num_classes=3):
         super(CNN_LSTM, self).__init__()
-        # CNN layers for feature extraction
-        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1)
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.fc1 = nn.Linear(32 * 4 * 4, 128)
-        # LSTM layers for sequence modeling
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc2 = nn.Linear(hidden_size, num_classes)
 
         # First convolutional layer: input channels = 12 (for MFCC), output channels = 16, kernel size = 3
-        self.conv1 = nn.Conv1d(12, 16, kernel_size=3, stride=2, padding=1)
+        self.conv1 = nn.Conv1d(12, 16, kernel_size=3, stride=1, padding=1)
         # Second convolutional layer: input channels = 16, output channels = 32, kernel size = 3
-        self.conv2 = nn.Conv1d(16, 32, kernel_size=3, stride=2, padding=1)
+        self.conv2 = nn.Conv1d(16, 32, kernel_size=3, stride=1, padding=1)
         
-        self.pool1 = nn.AdaptiveAvgPool1d(1)
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc1 = nn.Linear(32, num_classes)  
+        self.lstm = nn.LSTM(input_size=32, hidden_size=64, num_layers=1, batch_first=True)
+        self.dropout = nn.Dropout(0.2) # best: 0.2
+        self.fc = nn.Linear(64,num_classes)
+    
+    def __str__(self):
+        return 'CNN_LSTM'
 
     def forward(self, x):
+        # x: (batch,12,298)
         x = F.relu(self.conv1(x))
-        x = self.pool1(x)
         x = F.relu(self.conv2(x))
-        x = self.pool2(x)
-        x = x.view(x.size(0), x.size(1), -1)  # Reshape for LSTM
         
-        h0 = torch.zeros(2, x.size(0), 128).to(x.device)  # Initial hidden state
-        c0 = torch.zeros(2, x.size(0), 128).to(x.device)  # Initial cell state
-        out, _ = self.lstm(x, (h0, c0))  # LSTM output
-        out = self.fc(out[:, -1, :])  # Take the last time step's output
+        # reshape for LSTM
+        x = x.permute(0,2,1)
+        
+        x, _ = self.lstm(x)
+        
+        # Take the last time step's output
+        x=x[:, -1, :]
+        x = self.dropout(x)
+        
+        out = self.fc(x)  
+
         return out
     
     def predict(self, x):

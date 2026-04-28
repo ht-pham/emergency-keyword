@@ -37,15 +37,20 @@ def toTensor(X,y):
 
 def load_optimizers(model):
     import torch
-    optimizer = torch.optim.Adam(model.parameters(),lr=0.001)
-    criterion = torch.nn.CrossEntropyLoss()
-
+    optimizer = torch.optim.Adam(model.parameters(),lr=0.005)
+    if str(model) == 'CNN_LSTM':
+        weights = torch.tensor([1.4,1.2,1.2]) # best: [1.2,1.5,1.0]
+        criterion = torch.nn.CrossEntropyLoss(weight=weights)
+    else:
+        criterion = torch.nn.CrossEntropyLoss()
+    # print(optimizer)
+    # print(criterion)
     return optimizer, criterion
 
-def build(model,dataloader):
+def build(model,dataloader,epochs=101):
     opt, criterion = load_optimizers(model)
     model.train()
-    for epoch in range(101):
+    for epoch in range(epochs):
         for X_batch,y_batch in dataloader:
             predictions = model(X_batch)
             loss = criterion(predictions,y_batch)
@@ -95,18 +100,16 @@ if __name__ == "__main__":
 
     # Step 2 - load model
     base_model = CNN()
-    #lstm_model = CNN_LSTM()
+    lstm_model = CNN_LSTM()
 
     ## load optimizer and criterion for model training
     cnn_opt, cnn_criterion = load_optimizers(base_model)
-    #lstm_opt, lstm_criterion = load_optimizers(lstm_model)
+    lstm_opt, lstm_criterion = load_optimizers(lstm_model)
     
 
     ## train the model
-    build(base_model,dataloader)
-
-    
-    #build(lstm_model,dataloader)
+    build(base_model,dataloader,80)
+    build(lstm_model,dataloader,150)
 
     ## validate the model
     print("\n\t\tMODEL EVALUATION\n\n")
@@ -116,6 +119,13 @@ if __name__ == "__main__":
     print("======Testing set=======")
     evaluate(base_model,testloader)
 
+    ## validate the model
+    print("\n\t\tMODEL EVALUATION\n\n")
+    print("=====Training set=======")
+    evaluate(lstm_model,dataloader)
+    print("\n\t\tMODEL EVALUATION\n\n")
+    print("======Testing set=======")
+    evaluate(lstm_model,testloader)
     
 
 
